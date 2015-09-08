@@ -1,8 +1,26 @@
 $SYMBOL_TAGS = {
+	"CBH.TO" => {
+		market: "CAD",
+		type: "Bonds",
+		sub_type: "Corporate (1-10)",
+		distribution_frequency: :monthly
+	},
+	"CBO.TO" => {
+		market: "CAD",
+		type: "Bonds",
+		sub_type: "Corporate (1-5)",
+		distribution_frequency: :monthly
+	},
 	"CLF.TO" => {
 		market: "CAD",
 		type: "Bonds",
-		sub_type: "Government",
+		sub_type: "Government (1-5)",
+		distribution_frequency: :monthly
+	},
+	"CLG.TO" => {
+		market: "CAD",
+		type: "Bonds",
+		sub_type: "Government (1-10)",
 		distribution_frequency: :monthly
 	},
 	"HBB.TO" => {
