@@ -13,23 +13,21 @@ quotes = api.quotes
 
 getCAD = ETF::CurrencyConverter.method(:getCAD)
 
-puts "Symbol\tDescription\tAsk\tType\tSub-type"
+#puts "Symbol\tDescription\tAsk\tType\tSub-type"
 
 quotes.sort.each do |symbol_code, q|
 	symbol = symbols[symbol_code]
-	tags = $SYMBOL_TAGS[symbol_code]
-	description = symbol["description"]
 
 	begin
-		ask_price = getCAD.call(symbol["currency"], q["askPrice"] || q["lastTradePrice"])
+		symbol["ask_price"] = getCAD.call(symbol["currency"], q["askPrice"] || q["lastTradePrice"])
 
-		puts "#{q["symbol"]}\t#{description}\t#{ask_price}\t#{tags[:market]}-#{tags[:type]}\t#{tags[:sub_type]}"
+#		puts "#{q["symbol"]}\t#{description}\t#{ask_price}\t#{tags[:market]}-#{tags[:type]}\t#{tags[:sub_type]}"
 	rescue Exception => e
 		puts "#{e} for #{symbol}"
 		exit
 	end
 end
-puts "\n\n"
+#puts "\n\n"
 
 
 accounts_info = api.accounts
@@ -103,12 +101,17 @@ accounts_info.each do |raw_account|
 	end
 end
 
-puts "Symbol\tDescription\tOpen Quantity\tAverage Entry Price"
+puts "Symbol\tDescription\tAsk\tType\tSub-type\tOpen Quantity\tAverage Entry Price"
 average_entry_prices.sort.each do |symbol_code, price_info|
+	symbol = symbols[symbol_code]
+	tags = $SYMBOL_TAGS[symbol_code]
+	description = symbol["description"]
+	ask_price = symbol["ask_price"]
+
 	sum = price_info[:average_entry_price].inject(BigDecimal.new(0, 10)) do |running_total, average|
 		running_total+= average
 	end
 	average_entry_price = sum / price_info[:average_entry_price].length
 
-	puts "#{symbol_code}\t#{price_info[:description]}\t#{price_info[:open_quantity]}\t#{average_entry_price}"
+	puts "#{symbol_code}\t#{description}\t#{ask_price}\t#{tags[:market]}-#{tags[:type]}\t#{tags[:sub_type]}\t#{price_info[:open_quantity]}\t#{average_entry_price}"
 end
