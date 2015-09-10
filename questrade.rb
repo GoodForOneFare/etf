@@ -19,7 +19,7 @@ quotes.sort.each do |symbol_code, q|
 	symbol = symbols[symbol_code]
 
 	begin
-		symbol["ask_price"] = getCAD.call(symbol["currency"], q["askPrice"] || q["lastTradePrice"])
+		symbol["ask_price"] = getCAD.call(symbol["currency"], q["lastTradePrice"])
 
 #		puts "#{q["symbol"]}\t#{description}\t#{ask_price}\t#{tags[:market]}-#{tags[:type]}\t#{tags[:sub_type]}"
 	rescue Exception => e
