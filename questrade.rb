@@ -87,17 +87,19 @@ accounts_info.each do |raw_account|
 				description: description,
 				market_value: BigDecimal.new(0, 10),
 				average_entry_price: [],
+				closed_profit: 0,
 				open_quantity: 0
 			}
 		end
 
 		market_value  = getCAD.call(currency_code, position["currentMarketValue"] || 0)
 		average_entry_price = getCAD.call(currency_code, position["averageEntryPrice"] || 0)
-		if market_value > 0
-			average_entry_prices[symbol][:market_value]+= market_value
-			average_entry_prices[symbol][:average_entry_price].push(average_entry_price)
-			average_entry_prices[symbol][:open_quantity]+= position["openQuantity"].to_i
-		end
+		closed_profit = getCAD.call(currency_code, position["closedPnl"] || 0)
+
+		average_entry_prices[symbol][:market_value]+= market_value
+		average_entry_prices[symbol][:average_entry_price].push(average_entry_price)
+		average_entry_prices[symbol][:open_quantity]+= position["openQuantity"].to_i
+		average_entry_prices[symbol][:closed_profit]+= closed_profit
 	end
 end
 
@@ -108,10 +110,14 @@ average_entry_prices.sort.each do |symbol_code, price_info|
 	description = symbol["description"]
 	ask_price = symbol["ask_price"]
 
+	non_zero_acb_count = price_info[:average_entry_price].reduce(0) {|total, d| d > 0 ? total+1 : total }
+
 	sum = price_info[:average_entry_price].inject(BigDecimal.new(0, 10)) do |running_total, average|
 		running_total+= average
 	end
-	average_entry_price = sum / price_info[:average_entry_price].length
+	average_entry_price = sum / non_zero_acb_count
 
-	puts "#{symbol_code}\t#{description}\t#{ask_price}\t#{tags[:market]}-#{tags[:type]}\t#{tags[:sub_type]}\t#{price_info[:open_quantity]}\t#{average_entry_price}"
+	closed_profit = price_info[:closed_profit]
+
+	puts "#{symbol_code}\t#{description}\t#{ask_price}\t#{tags[:market]}-#{tags[:type]}\t#{tags[:sub_type]}\t#{price_info[:open_quantity]}\t#{average_entry_price}\t#{closed_profit}"
 end
