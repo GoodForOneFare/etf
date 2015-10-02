@@ -104,6 +104,63 @@ $SYMBOL_TAGS = {
 		sub_type: "REIT",
 		distribution_frequency: :quarterly
 	},
+	"FILL" => {
+		market: "Global",
+		type: "Equity",
+		sub_type: "Energy",
+		distribution_frequency: :semi_annual,
+		splits: {
+			"US" => (51.84),
+			"CAD" => (8.04),
+			"Developed-Asia-Pacific" => (1.35 + 1.19 + (5.49 / 3)),
+			"Developed-Europe"       => (8.73 + 8.6 + 5.56 + 2.39 + (5.49 / 3)),
+			"Emerging"               => (2.59 + 2.54 + 1.21 + (5.49 / 3))
+		}
+	},
+	"ICLN" => {
+		market: "Global",
+		type: "Equity",
+		sub_type: "Clean energy",
+		distribution_frequency: :semi_annual,
+		splits: {
+			"US" => (25.49),
+			"Developed-Asia-Pacific" => (6.2 + 5.92 + (1.43 / 3)),
+			"Developed-Europe"       => (7.57 + 6.98 + 6.32 + 4.34 + 3.37 + 2.17 + (1.43 / 3)),
+			"Emerging"               => (25.17 + 5.02 + (1.43 / 3))
+		}
+	},
+	"REM" => {
+		market: "US",
+		type: "Equity",
+		sub_type: "Mortage REITs",
+		distribution_frequency: :quarterly
+	},
+	"XT" => {
+		market: "Global",
+		type: "Equity",
+		sub_type: "Exponential tech",
+		distribution_frequency: :semi_annual,
+		splits: {
+			"US"  => (67.43),
+			"CAD" => (1.92),
+			"Developed-Asia-Pacific" => (1.72 + 1.71 + (7.11 / 3)),
+			"Developed-Europe"       => (4.98 + 4.32 + 3.78 + 3.16 + 1.44 + 1.34 + (7.11 / 3)),
+			"Emerging"               => (1.09 + (7.11 / 3))
+		}
+	},
+	"PICK" => {
+		market: "Global",
+		type: "Equity",
+		sub_type: "Mining",
+		distribution_frequency: :semi_annual,
+		splits: {
+			"US"  => (13.61),
+			"CAD" => (2.84),
+			"Developed-Asia-Pacific" => (26.86 + 10.38 + (9.62 / 3)),
+			"Developed-Europe"       => (10.21 + 4.55 + 2.15 + 1.38 + 1.21 + (9.62 / 3)),
+			"Emerging"               => (3.51 + 2.72 + 2.2 + 2.14 + 1.29 + (9.62 / 3))
+		}
+	},
 	"WPS" => {
 		market: "Developed-Ex-US",
 		type: "Equity",

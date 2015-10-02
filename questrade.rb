@@ -4,6 +4,12 @@ require 'rest-client'
 require_relative './currency-converter'
 require_relative './symbol_tags'
 require_relative './questrade_api'
+if File.exists?('./risks.txt')
+	risks = File.readlines('./risks.txt')
+	risks.map! {|risk| risk.strip }
+else
+	risks = []
+end
 
 api = Questrade::API.new()
 api.authorize
@@ -40,6 +46,7 @@ accounts_info.each do |raw_account|
 	positions.sort.each do |symbol_code, position|
 		symbol = position["symbol"]
 		tags = $SYMBOL_TAGS[symbol]
+		is_risk = risks.include?(symbol_code)
 
 		raise "No tags defined for #{symbol}" if tags == nil
 
@@ -55,10 +62,14 @@ accounts_info.each do |raw_account|
 				split_value = (market_value * (split_percentage/100))
 				split_quantity = (open_quantity * (split_percentage/100))
 
-				puts "#{raw_account["type"]}\t'#{symbol}\t#{description}\t#{split_quantity}\t#{split_value.to_f}\t#{market_type}-#{tags[:type]}"
+				market_category = is_risk ? "Risk-Risk" : "#{market_type}-#{tags[:type]}"
+
+				puts "#{raw_account["type"]}\t'#{symbol}\t#{description}\t#{split_quantity}\t#{split_value.to_f}\t#{market_category}"
 			end
 		else
-			puts "#{raw_account["type"]}\t'#{symbol}\t#{description}\t#{open_quantity}\t#{market_value}\t#{tags[:market]}-#{tags[:type]}\t#{tags[:sub_type]}"
+			market_category = is_risk ? "Risk-Risk" : "#{tags[:market]}-#{tags[:type]}"
+
+			puts "#{raw_account["type"]}\t'#{symbol}\t#{description}\t#{open_quantity}\t#{market_value}\t#{market_category}\t#{tags[:sub_type]}"
 		end
 	end
 
@@ -118,6 +129,7 @@ average_entry_prices.sort.each do |symbol_code, price_info|
 	average_entry_price = sum / non_zero_acb_count
 
 	closed_profit = price_info[:closed_profit]
+	market_category = risks.include?(symbol_code) ? "Risk-Risk" : "#{tags[:market]}-#{tags[:type]}"
 
-	puts "#{symbol_code}\t#{description}\t#{ask_price}\t#{tags[:market]}-#{tags[:type]}\t#{tags[:sub_type]}\t#{price_info[:open_quantity]}\t#{average_entry_price}\t#{closed_profit}"
+	puts "#{symbol_code}\t#{description}\t#{ask_price}\t#{market_category}\t#{tags[:sub_type]}\t#{price_info[:open_quantity]}\t#{average_entry_price}\t#{closed_profit}"
 end
